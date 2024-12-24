@@ -3,8 +3,7 @@
 import os
 from pathlib import Path
 import json
-from paths import DATABASE_DIR
-
+from typing import Type
 class DatabaseError(Exception): # Base class for database errors
     pass
 
@@ -28,9 +27,9 @@ class Person: # Class for data to be stored in database
             "grades": self.grades,
             })
 
-def make_gradebook_file(teacher_name, class_name):
+def make_gradebook_file(teacher_name: str, class_name: str, file_path: str):
     try:
-        with open(DATABASE_DIR / class_name, "w") as file:
+        with open(filepath, "w") as file:
             file.write(json.dumps({
                 "class": class_name,
                 "teacher": teacher_name,
@@ -39,9 +38,12 @@ def make_gradebook_file(teacher_name, class_name):
         raise DatabaseError(f"Error initialising database file.\n {e}")
 
 class Gradebook:
-    def __init__(self, class_name: str):
-        self.class_name = class_name
-        self.database_file = open(DATABASE_DIR/class_name, "a") # Bez databáze nemá objekt smysl
+    def __init__(self, class_name: str, file_path: str):
+        self.filepath = file_path
+        try:
+            self.database_file = open(self.filepath "a")
+        except OSError as e:
+            raise DatabaseError(f"Error reading database file\n {e}")
 
     def write_database_to_disk(self):
         try:
@@ -50,26 +52,19 @@ class Gradebook:
         except IOError as e:
             raise DatabaseError(f"Write to disk failed.\n {e}")
 
-    def read_student(self, username: str) -> Person:
+    def read_student(self, line) -> Person:
         try:
-            for line in self.database_file:
-                data = json.loads(line)
-                
-                if data["username"] == username:
-                    return Person(name = data["name"],
-                                  surname = data["surname"], 
-                                  username = data["username"],
-                                  birth_date = data["birth_date"],
-                                  grades = data["grades"]
-                                  )
-            raise DatabaseError(f"Could not find record with username {username}")
-        
+            data = json.loads(line)
+            return Person(name = data["name"],
+                          surname = data["surname"], 
+                          username = data["username"],
+                          birth_date = data["birth_date"],
+                          grades = data["grades"]
+                          )
         except json.JSONDecodeError as e:
-            raise DataError(f"Error converting data from json\n {e}")
-        except KeyError as e:
-            raise DataError(f"Error reading username from record\n {e}")
+            raise DatabaseError(f"Error converting data from json\n {e}")
 
-    def create_record(self, Person) -> str:
+    def create_record(self, Student: Type[Person]) -> str:
         try:
             if self.student_in_database(Student.username) == False:
                 self.database_file.write(Student.serialize())
@@ -88,3 +83,15 @@ class Gradebook:
             raise DataError(f"Error converting data from json\n {e}")
         except KeyError as e:
             raise DataError(f"Error reading username from record\n {e}")
+
+    def modify_student(self, modified_student: Type[Person]):
+        try:
+            lines = self.database_file.readlines()
+            linenum = 0
+            for line in lines:
+                if line["username"] == modified_student.username:
+                    lines[linenum] = modified_student.serialize()
+            self.databse_file.writelines(lines)
+        except json.JSONDecodeErorr, KeyError, IOError as e: 
+            raise DatabaseError(f" Error modifiing student record\n{e}")
+
