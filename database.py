@@ -34,6 +34,17 @@ class Person: # Class for data to be stored in database
             f.write(''.join(username) + "\n")
 
         return ''.join(username)
+    def arithmetic_mean(self, subject: str) -> float:
+        for grade in self.grades[subject]:
+            i = 0
+            grade_sum = 0
+            if grade.replace(".", "", 1).isdigit():
+                grade_sum += float(grade)
+                i += 1
+
+        return grade_sum/i
+
+
 
     def serialize(self) -> str:
         return json.dumps({
@@ -92,7 +103,7 @@ class Gradebook:
         except json.JSONDecodeError as e:
             raise DatabaseError(f"Error converting data from json\n {e}")
 
-    def read_student(self, username: str) -> Person:
+    def read_record(self, username: str) -> Person:
         try:
             self.database_file.seek(0)
             for line in self.database_file.readlines()[1:]:
