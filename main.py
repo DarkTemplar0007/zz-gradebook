@@ -10,7 +10,8 @@ while True:
     match action:
         case 1:
             try:
-                db.make_gradebook_file(map(str, input("Give me teacher's name, class name and path to new file separated by space: ").split()))
+                name, class_name, file_path = map(str, input("Give me teacher's name, class name and path to new file separated by comma: ").split(","))
+                db.make_gradebook_file(name, class_name, file_path)
             except Exception as e:
                 print(f"Following error ocured:\n {e}")
                 continue

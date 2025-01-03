@@ -25,19 +25,19 @@ class Person: # Class for data to be stored in database
         second_part = list(unicodedata.normalize("NFKD", self.name).encode("ascii", "ignore").decode().lower())
         username = first_part[:5] + second_part[:8 - len(first_part[:5])]
         n = 1
-        while ''.join(username) + "\n" in open("username_registery", "r").readlines():
+        while ''.join(username) + "\n" in open("username_registery", "r", encoding = "utf-8").readlines():
            n_split = list(str(n))
            for i in range(len(n_split)):
                username[-1-i] = str(n_split[i - 1])
            n += 1
-        with open("username_registery", "a") as f:
+        with open("username_registery", "a", encoding = "utf-8") as f:
             f.write(''.join(username) + "\n")
 
         return ''.join(username)
     def arithmetic_mean(self, subject: str) -> float:
+        i = 0
+        grade_sum = 0
         for grade in self.grades[subject]:
-            i = 0
-            grade_sum = 0
             if grade.replace(".", "", 1).isdigit():
                 grade_sum += float(grade)
                 i += 1
@@ -60,7 +60,7 @@ def make_gradebook_file(teacher_name: str, class_name: str, file_path: str):
         raise DatabaseError(f"File {file_path} alredy exists, modify it with apropriate Gradebook methods or delete it manually")
     else:
         try:
-            with open(file_path, "w") as file:
+            with open(file_path, "w", encoding = "utf-8") as file:
                 file.write(json.dumps({
                     "class": class_name,
                     "teacher": teacher_name,
@@ -73,7 +73,7 @@ class Gradebook:
     def __init__(self, file_path: str):
         self.file_path = file_path
         try:
-            self.database_file = open(self.file_path, "r+")
+            self.database_file = open(self.file_path, "r+", encoding = "utf-8")
         except OSError as e:
             raise DatabaseError(f"Error reading database file.") from e
 
