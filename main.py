@@ -39,8 +39,8 @@ while True:
                         case 1:
                             gradebook.show_table()
                         case 2:
-                            name, surname, birth_date = map(str, input("Give me name, surname and birth date separated by space: ").split())
-                            grades = {subject: [] for subject in list(map(str, input("Give me subjects, separated by space: ").split()))}
+                            name, surname, birth_date = map(str, input("Give me name, surname and birth date separated by comma: ").split(","))
+                            grades = {subject: [] for subject in list(map(str, input("Give me subjects, separated by comma: ").split(",")))}
                             gradebook.create_record(db.Person(name, surname, birth_date, grades))
                             gradebook.write_database_to_disk()
 
@@ -48,7 +48,8 @@ while True:
                             student = gradebook.read_record(str(input("Give me username: ")))
                             for subject in student.grades:
                                 print(f"{subject}:{student.grades[subject]}")
-                                student.grades.update({subject: list(map(str, input(f"Give me updated list of {subject} grades, each separated by space : ").split()))})
+                                student.grades.update({subject: [char for char in list(map(str, input(f"Give me updated list of {subject} grades, each separated by comma : ").split(","))) if char != '']})
+                                print(student.grades[subject])
                                 gradebook.modify_record(student)
                                 gradebook.write_database_to_disk()
                         case 4:
