@@ -85,7 +85,7 @@ class Gradebook:
             raise DatabaseError(f"Write to disk failed.\n {e}")
     
     def show_table(self): # Tady by se fakt hodila knihovna
-        print(f"{"Name" : <10}{"Surname" : ^10}{"Username" : ^10}{"Birth Date" : >10}")
+        print(f'{"Name" : <10}{"Surname" : ^10}{"Username" : ^10}{"Birth Date" : >10}')
         try:
             self.database_file.seek(0)
             for line in self.database_file.readlines()[1:]:
@@ -128,7 +128,7 @@ class Gradebook:
         except IOError as e:
                 raise DatabaseError(f"Error creating record\n {e}")
 
-    def student_in_database(self, username: str) -> Bool:
+    def student_in_database(self, username: str) -> bool:
         try:
             self.database_file.seek(0)
             for line in self.database_file.readlines()[1:]:
