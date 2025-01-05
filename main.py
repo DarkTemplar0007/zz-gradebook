@@ -42,7 +42,7 @@ while True:
                             name, surname, birth_date = map(str, input("Give me name, surname and birth date separated by comma: ").split(","))
                             grades = {subject: [] for subject in list(map(str, input("Give me subjects, separated by comma: ").split(",")))}
                             for subject in grades:
-                               print(f"{subject}:{student.grades[subject]}")
+                               print(f"{subject}:{grades[subject]}")
                                grades.update({subject: [char for char in list(map(str, input(f"Give me updated list of {subject} grades, each separated by comma : ").split(","))) if char != '']})
                             gradebook.create_record(db.Person(name, surname, birth_date, grades))
                             gradebook.write_database_to_disk()
