@@ -1,7 +1,6 @@
 # Some inspiraion from https://github.com/vndee/toydb-python.git was taken
 
 import os
-from pathlib import Path
 import json
 from typing import Type
 import unicodedata 
@@ -123,6 +122,7 @@ class Gradebook:
             self.database_file.seek(0, 2)
             if self.student_in_database(Student.username) == False:
                 self.database_file.write(Student.serialize())
+                self.write_database_to_disk()
             else:
                 raise DatabaseError(f"Student exists, to modify, use modify_record method")
         except IOError as e:
@@ -155,6 +155,7 @@ class Gradebook:
                     if data["username"] == modified_student.username:
                         lines[i] = modified_student.serialize()
                     linenum += 1
+            self.database_file.truncate(0)
             self.database_file.seek(0)
             self.database_file.writelines(lines)
         except (json.JSONDecodeError, KeyError, IOError) as e: 

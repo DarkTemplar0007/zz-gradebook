@@ -51,9 +51,10 @@ while True:
                             student = gradebook.read_record(str(input("Give me username: ")))
                             for subject in student.grades:
                                 print(f"{subject}:{student.grades[subject]}")
-                                student.grades.update({subject: [char for char in list(map(str, input(f"Give me updated list of {subject} grades, each separated by comma : ").split(","))) if char != '']})
-                                gradebook.modify_record(student)
-                                gradebook.write_database_to_disk()
+                                student.grades.update({subject: [char for char in list(map(str, input(f"Give me updated list of {subject} grades, each separated by comma : ").split(","))) if char not in ('','\n')]})
+                            print(student.grades)
+                            gradebook.modify_record(student)
+                            gradebook.write_database_to_disk()
                         case 4:
                             print(gradebook.read_record(str(input("Give me username: "))).arithmetic_mean(str(input("Give me subject: "))))
                         case 5:
